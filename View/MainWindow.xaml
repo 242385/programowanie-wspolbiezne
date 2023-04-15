@@ -11,10 +11,10 @@
         <Grid.DataContext>
             <ViewModel:ViewModelApi/>
         </Grid.DataContext>
-        <Button Content="Generate Balls" Command="{Binding SignalStart}" Margin="10,-43,440,650" Background="White" RenderTransformOrigin="0.563,-0.145"/>
-        <Button Content="Stop Threads" Command="{Binding SignalStop}" Margin="190,-43,260,650" Background="White"/>
-        <TextBox Margin="454,-35,61,660" Text="{Binding numberOfModelBalls, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap"/>
-        <Label Margin="363,-34,163,660">No. of Balls:</Label>
+        <Button Content="Start Balls" Command="{Binding SignalStart}" Margin="10,-43,440,650" Background="White" RenderTransformOrigin="0.563,-0.145"/>
+        <Button Content="Stop Balls" Command="{Binding SignalStop}" Margin="190,-43,260,650" Background="White"/>
+        <TextBox Margin="454,-35,10,660" Text="{Binding numberOfModelBalls, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap"/>
+        <Label Margin="363,-34,151,660">No. of Balls:</Label>
         <ItemsControl Width="600" Height="600" ItemsSource="{Binding modelBallCollection}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
