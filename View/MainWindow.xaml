@@ -3,10 +3,41 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ViewModel="clr-namespace:ViewModel;assembly=ViewModel"
         xmlns:local="clr-namespace:View"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="Balls" Height="782" Width="748" ResizeMode="NoResize">
+    <Grid Height="650" Width="600">
+        <Grid.DataContext>
+            <ViewModel:ViewModelApi/>
+        </Grid.DataContext>
+        <Button Content="Generate Balls" Command="{Binding SignalStart}" Margin="0,1,505,625" Background="White" RenderTransformOrigin="0.563,-0.145"/>
+        <Button Content="Stop Threads" Command="{Binding SignalStop}" Margin="109,1,403,625" Background="White"/>
+        <Button Content="Resume Threads" Command="{Binding SignalResume}" Margin="213,1,288,625" Background="White"/>
+        <TextBox Margin="465,0,47,626" Text="{Binding numberOfModelBalls, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" Height="24"/>
+        <Label Margin="391,0,135,626">No. of Balls:</Label>
+        <ItemsControl Width="600" Height="600" ItemsSource="{Binding modelBallCollection}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas Width="600" Height="600" Background="Silver"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemContainerStyle>
+                <Style TargetType="ContentPresenter">
+                    <Setter Property="Canvas.Left" Value="{Binding x}"/>
+                    <Setter Property="Canvas.Top" Value="{Binding y}"/>
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Ellipse Height="25" Width="25" Fill="Blue">
+                        <Ellipse.RenderTransform>
+                            <TranslateTransform X="-10" Y="-10" />
+                        </Ellipse.RenderTransform>
+                    </Ellipse>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
 
     </Grid>
 </Window>
