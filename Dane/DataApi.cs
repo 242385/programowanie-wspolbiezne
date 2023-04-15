@@ -1,5 +1,4 @@
-﻿
-namespace Dane
+﻿namespace Dane
 {
     public abstract class DataApi
     {

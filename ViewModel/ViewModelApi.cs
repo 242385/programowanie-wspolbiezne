@@ -16,7 +16,6 @@ namespace ViewModel
         {
             this.SignalStart = new Signals(Start);
             this.SignalStop = new Signals(Stop);
-            this.SignalResume = new Signals(Resume);
         }
 
         public string numberOfModelBalls
@@ -48,11 +47,6 @@ namespace ViewModel
             get;
             set;
         } 
-        public ICommand SignalResume
-        {
-            get;
-            set;
-        }
 
         public void Start()
         {
@@ -69,11 +63,6 @@ namespace ViewModel
         public void Stop()
         {
             logicApi.StopThreads();
-        }
-
-        public void Resume()
-        {
-            logicApi.ResumeThreads();
         }
 
         private void propertyChanged(object sender, PropertyChangedEventArgs e)
