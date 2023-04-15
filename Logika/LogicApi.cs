@@ -63,16 +63,41 @@ namespace Logika
                     Thread thread = new Thread(() =>
                     {
                         Random random = new Random();
-                        int dx = random.Next(-10, 10);
-                        int dy = random.Next(-10, 10);
+                        int counter = 0;
+                        int dx = random.Next(-5, 5);
+                        int dy = random.Next(-5, 5);
                         while (!stopThreads)
                         {
+                            counter+= random.Next(1, 5);
+                            if(counter >= 50)
+                            {
+                                dx = random.Next(-5, 6);
+                                dy = random.Next(-5, 6);
+                                counter = 0;
+                            }
+                            if (ball.x < 40)
+                            {
+                                dx = random.Next(5, 10);
+                                dy = random.Next(-5, 5);
+                            }
+                            if (ball.x > 560)
+                            {
+                                dx = random.Next(-10, -5);
+                                dy = random.Next(-5, 5);
+                            }
+                            if (ball.y < 40)
+                            {
+                                dx = random.Next(-5, 5);
+                                dy = random.Next(5, 10);
+                            }
+                            if (ball.y > 560)
+                            {
+                                dx = random.Next(-5, 5);
+                                dy = random.Next(-10, -5);
+                            }
+
                             ball.x += dx;
                             ball.y += dy;
-                            while (ball.x < 10) ball.x += 580;
-                            while (ball.x > 590) ball.x -= 580;
-                            while (ball.y < 10) ball.y += 580;
-                            while (ball.y > 590) ball.y -= 580;
 
                             Thread.Sleep(16);
                         }
