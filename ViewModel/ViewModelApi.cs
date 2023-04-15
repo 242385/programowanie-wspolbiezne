@@ -14,8 +14,9 @@ namespace ViewModel
 
         public ViewModelApi()
         {
-            this.SygnalStart = new Signals(Start);
-            this.SygnalStop = new Signals(Stop);
+            this.SignalStart = new Signals(Start);
+            this.SignalStop = new Signals(Stop);
+            this.SignalResume = new Signals(Resume);
         }
 
         public string numberOfModelBalls
@@ -36,13 +37,18 @@ namespace ViewModel
             }
         }
 
-        public ICommand SygnalStart
+        public ICommand SignalStart
         {
             get;
             set;
         }
 
-        public ICommand SygnalStop
+        public ICommand SignalStop
+        {
+            get;
+            set;
+        } 
+        public ICommand SignalResume
         {
             get;
             set;
@@ -65,6 +71,11 @@ namespace ViewModel
             logicApi.StopThreads();
         }
 
+        public void Resume()
+        {
+            logicApi.ResumeThreads();
+        }
+
         private void propertyChanged(object sender, PropertyChangedEventArgs e)
         {
             OnPropertyChanged("ModelBallCollection");
@@ -77,3 +88,5 @@ namespace ViewModel
         }
     }
 }
+
+//SignalResume is experimental, not working atm
