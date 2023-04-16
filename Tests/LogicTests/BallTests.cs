@@ -1,5 +1,4 @@
-﻿
-using Logika;
+﻿using Logika;
 
 namespace Tests
 {
