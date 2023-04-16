@@ -15,14 +15,14 @@ namespace Tests
             Assert.IsNotNull(logicApi1);
         }
         [TestMethod]
-        public void GenerujLosoweKulkiTest()
+        public void GenerateBallsTest()
         {
             DataApi dataApi1 = DataApi.CreateNewInstance();
             LogicApi logicApi = LogicApi.CreateNewInstance(dataApi1);
             int numberOfBalls = 20;
 
             logicApi.GenerateBalls(numberOfBalls);
-            List<Ball> listaKulek = dataApi1.GetBallList();
+            List<Ball> listaKulek = logicApi.GetBallList();
 
             Assert.AreEqual(listaKulek.Count, numberOfBalls);
         }

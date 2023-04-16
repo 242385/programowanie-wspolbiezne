@@ -1,4 +1,4 @@
-﻿using Dane;
+﻿using Logika;
 using System.Collections.ObjectModel;
 
 namespace Model
@@ -6,11 +6,6 @@ namespace Model
     public abstract class ModelApi
     {
         private static ModelApi Instance = new Model();
-
-        public static ModelApi CreateNewInstance(DataApi dataApi)
-        {
-            return new Model(dataApi);
-        }
 
         public static ModelApi instance
         {
@@ -23,24 +18,15 @@ namespace Model
 
         internal sealed class Model : ModelApi
         {
-            internal Model()
-            {
-                dataApi = DataApi.instance;
-            }
-
-            internal Model(DataApi dataApi)
-            {
-                this.dataApi = dataApi;
-            }
-
-            DataApi dataApi = DataApi.instance;
+         
+            LogicApi logicApi = LogicApi.instance;
 
             ObservableCollection<ModelBall> ModelBallCollection = new ObservableCollection<ModelBall>();
 
-            public override void ConvertBallsToModelBalls()
+            public override void ConvertBallsToModelBalls()         
             {
-                List<Ball> ballList = dataApi.GetBallList(); //to be changed, dataAPI should not be here
-                ModelBallCollection.Clear();                 //idk how yet
+                List<Ball> ballList = logicApi.GetBallList(); 
+                ModelBallCollection.Clear();                 
                 foreach (Ball ball in ballList)
                 {
                     ModelBallCollection.Add(new ModelBall(ball));

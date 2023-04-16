@@ -21,7 +21,8 @@ namespace Logika
         public abstract void CreateThreads();
 
         public abstract void StopThreads();
-        public abstract void ResumeThreads();
+
+        public abstract List<Ball> GetBallList();
 
         internal sealed class Logic : LogicApi
         {
@@ -39,9 +40,15 @@ namespace Logika
 
             private bool stopThreads = false;
 
+            private List<Ball> ballList = new List<Ball>();
+
+            public override List<Ball> GetBallList()
+            {
+                return ballList;
+            }
             public override void GenerateBalls(int number)
             {
-                List<Ball> ballList = dataApi.GetBallList();
+                List<Ball> ballList = GetBallList();
                 ballList.Clear();
                 Random random = new Random();
 
@@ -55,7 +62,7 @@ namespace Logika
 
             public override void CreateThreads()
             {
-                List<Ball> ballList= dataApi.GetBallList();
+                List<Ball> ballList= GetBallList();
                 stopThreads = false;
 
                 foreach (Ball ball in ballList)
@@ -109,12 +116,7 @@ namespace Logika
             public override void StopThreads()
             {
                 stopThreads = true;
-            }
-
-            public override void ResumeThreads()
-            {
-                stopThreads = false; //PLACEHOLDER
-            }
+            }            
         }
     }
 }

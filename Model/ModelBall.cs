@@ -1,4 +1,4 @@
-﻿using Dane;
+﻿using Logika;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 

@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Logika\Logika.csproj" />
     <ProjectReference Include="..\Model\Model.csproj" />
   </ItemGroup>
 

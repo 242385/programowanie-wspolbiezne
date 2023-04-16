@@ -77,5 +77,3 @@ namespace ViewModel
         }
     }
 }
-
-//SignalResume is experimental, not working atm
