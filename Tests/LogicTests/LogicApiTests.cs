@@ -45,5 +45,28 @@ namespace Tests
             Assert.AreNotEqual(ballList1[0].x, x1);
             Assert.AreNotEqual(ballList1[0].y, y1);
         }
+        
+        [TestMethod]
+        public void BallsDoNotGoOutOfBoundsTest()
+        {
+            DataApi dataApi1 = DataApi.CreateNewInstance();
+            LogicApi logicApi1 = LogicApi.CreateNewInstance(dataApi1);
+            int numberOfBalls = 1;
+
+            logicApi1.GenerateBalls(numberOfBalls);
+            List<Ball> ballList1 = logicApi1.GetBallList();
+            ballList1[0].y = 561;
+            ballList1[0].x = 561;
+            logicApi1.CreateThreads();
+            Thread.Sleep(16);
+
+            bool test = false;
+
+            if (ballList1[0].y < 561 && ballList1[0].x < 561)
+            {
+                test = true;
+            }
+            Assert.IsTrue(test);
+        }
     }
 }
