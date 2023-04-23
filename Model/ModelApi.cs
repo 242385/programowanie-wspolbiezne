@@ -14,26 +14,27 @@ namespace Model
 
         public abstract void ConvertBallsToModelBalls();
 
-        public abstract ObservableCollection<ModelBall> GetModelBallCollection();
+        public abstract ObservableCollection<IModelBall> GetModelBallCollection();
 
         internal sealed class Model : ModelApi
         {
          
             LogicApi logicApi = LogicApi.instance;
 
-            ObservableCollection<ModelBall> ModelBallCollection = new ObservableCollection<ModelBall>();
+            ObservableCollection<IModelBall> ModelBallCollection = new ObservableCollection<IModelBall>();
 
             public override void ConvertBallsToModelBalls()         
             {
-                List<Ball> ballList = logicApi.GetBallList(); 
+                List<IBall> ballList = logicApi.GetBallList(); 
                 ModelBallCollection.Clear();                 
-                foreach (Ball ball in ballList)
+                foreach (IBall ball in ballList)
                 {
-                    ModelBallCollection.Add(new ModelBall(ball));
+                    IModelBall newModelBall = IModelBall.CreateModelBall(ball);
+                    ModelBallCollection.Add(newModelBall);
                 }
             }
 
-            public override ObservableCollection<ModelBall> GetModelBallCollection()
+            public override ObservableCollection<IModelBall> GetModelBallCollection()
             {
                 return ModelBallCollection;
             }

@@ -2,9 +2,9 @@
 
 namespace Logika
 {
-    public class Ball : INotifyPropertyChanged
+    internal class Ball : IBall, INotifyPropertyChanged
     {
-        public Ball(int x, int y)
+        internal Ball(int x, int y)
         {
             this.x = x; this.y = y;
         }
@@ -12,7 +12,7 @@ namespace Logika
         private int X;
         private int Y;
 
-        public int x
+        public override int x
         {
             get { return this.X; }
             set
@@ -22,7 +22,7 @@ namespace Logika
             }
         }
 
-        public int y
+        public override int y
         {
             get { return this.Y; }
             set
@@ -32,7 +32,7 @@ namespace Logika
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public override event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

@@ -1,4 +1,4 @@
-﻿using Dane;
+﻿//using Dane;
 
 namespace Logika
 {
@@ -6,9 +6,9 @@ namespace Logika
     {
         private static LogicApi Instance = new Logic();
 
-        public static LogicApi CreateNewInstance(DataApi dataApi)
+        public static LogicApi CreateNewInstance()
         {
-            return new Logic(dataApi);
+            return new Logic();
         }
 
         public static LogicApi instance
@@ -22,33 +22,21 @@ namespace Logika
 
         public abstract void StopThreads();
 
-        public abstract List<Ball> GetBallList();
+        public abstract List<IBall> GetBallList();
 
         internal sealed class Logic : LogicApi
         {
-            internal Logic()
-            {
-                dataApi = DataApi.instance;
-            }
-
-            internal Logic(DataApi dataApi)
-            {
-                this.dataApi = dataApi;
-            }
-
-            DataApi dataApi;
-
             private bool stopThreads = false;
 
-            private List<Ball> ballList = new List<Ball>();
+            private List<IBall> ballList = new List<IBall>();
 
-            public override List<Ball> GetBallList()
+            public override List<IBall> GetBallList()
             {
                 return ballList;
             }
             public override void GenerateBalls(int number)
             {
-                List<Ball> ballList = GetBallList();
+                List<IBall> ballList = GetBallList();
                 ballList.Clear();
                 Random random = new Random();
 
@@ -56,16 +44,17 @@ namespace Logika
                 {
                     int x = random.Next(10, 590);
                     int y = random.Next(10, 590);
-                    ballList.Add(new Ball(x, y));
+                    IBall ball = IBall.CreateBall(x, y);
+                    ballList.Add(ball);
                 }
             }
 
             public override void CreateThreads()
             {
-                List<Ball> ballList= GetBallList();
+                List<IBall> ballList= GetBallList();
                 stopThreads = false;
 
-                foreach (Ball ball in ballList)
+                foreach (IBall ball in ballList)
                 {
                     Thread thread = new Thread(() =>
                     {

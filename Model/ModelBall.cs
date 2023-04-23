@@ -1,12 +1,13 @@
-﻿using Logika;
+﻿
+using Logika;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace Model
 {
-    public class ModelBall : INotifyPropertyChanged
+    internal class ModelBall : IModelBall, INotifyPropertyChanged
     {
-        public ModelBall(Ball ball)
+        internal ModelBall(IBall ball)
         {
             ball.PropertyChanged += propertyChanged;
             this.x = ball.x;
@@ -16,7 +17,7 @@ namespace Model
         private int X;
         private int Y;
 
-        public int x
+        public override int x
         {
             get { return X; }
             set
@@ -25,7 +26,7 @@ namespace Model
                 OnPropertyChanged("x");
             }
         }
-        public int y
+        public override int y
         {
             get { return Y; }
             set
@@ -37,7 +38,7 @@ namespace Model
 
         private void propertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            Ball ball = (Ball)sender;
+            IBall ball = (IBall)sender;
             if (e.PropertyName == "x")
             {
                 this.x = ball.x;
@@ -48,7 +49,7 @@ namespace Model
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public override event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

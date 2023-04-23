@@ -1,19 +1,15 @@
 ﻿namespace Dane
 {
     public abstract class DataApi
-    {
-        private static Data Instance = new Data();
+    { 
+       public static DataApi CreateNewInstance()
+       {
+           return new DataAPI();
+       }
 
-        public static DataApi CreateNewInstance() { return new Data(); }
+       internal sealed class DataAPI : DataApi
+       {
 
-        public static DataApi instance
-        {
-            get { return Instance; }
-        }
-
-        internal sealed class Data : DataApi
-        {
-            internal Data() { }
-        }
+       }
     }
 }

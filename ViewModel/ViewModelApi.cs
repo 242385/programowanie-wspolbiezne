@@ -24,9 +24,9 @@ namespace ViewModel
             set;
         }
 
-        private ObservableCollection<ModelBall> ModelBallCollection;
+        private ObservableCollection<IModelBall> ModelBallCollection;
 
-        public ObservableCollection<ModelBall> modelBallCollection
+        public ObservableCollection<IModelBall> modelBallCollection
         {
             get { return ModelBallCollection; }
             set
@@ -53,7 +53,7 @@ namespace ViewModel
             logicApi.GenerateBalls(Convert.ToInt16(numberOfModelBalls));
             modelApi.ConvertBallsToModelBalls();
             ModelBallCollection = modelApi.GetModelBallCollection();
-            foreach (ModelBall modelBall in ModelBallCollection)
+            foreach (IModelBall modelBall in ModelBallCollection)
             {
                 modelBall.PropertyChanged += propertyChanged;
             }

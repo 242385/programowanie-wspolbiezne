@@ -27,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Logika", "Logika\Logika.csp
 		{F9A7F2B8-5D95-4DAB-BB76-DA3B5F6F2151} = {F9A7F2B8-5D95-4DAB-BB76-DA3B5F6F2151}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{60E9C557-1498-4512-AD8B-DED7E595C8CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{60E9C557-1498-4512-AD8B-DED7E595C8CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
