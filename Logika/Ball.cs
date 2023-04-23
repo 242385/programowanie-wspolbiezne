@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Dane;
+using System.ComponentModel;
 
 namespace Logika
 {
@@ -37,6 +38,8 @@ namespace Logika
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        private readonly DataApi dataApi = DataApi.CreateNewInstance();
 
     }
 }

@@ -1,4 +1,5 @@
-﻿//using Dane;
+﻿
+using Dane;
 
 namespace Logika
 {

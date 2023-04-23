@@ -1,7 +1,4 @@
-﻿/*
-
-using Dane;
-using Logika;
+﻿using Logika;
 
 namespace Tests
 { 
@@ -11,24 +8,19 @@ namespace Tests
         [TestMethod]
         public void CreateNewInstanceTest()
         {
-            DataApi dataApi1 = DataApi.CreateNewInstance();
-            LogicApi logicApi1 = LogicApi.CreateNewInstance(dataApi1);
+            LogicApi logicApi1 = LogicApi.CreateNewInstance();
 
             Assert.IsNotNull(logicApi1);
         }
         [TestMethod]
         public void GenerateBallsTest()
         {
-            DataApi dataApi1 = DataApi.CreateNewInstance();
-            LogicApi logicApi = LogicApi.CreateNewInstance(dataApi1);
+            LogicApi logicApi = LogicApi.CreateNewInstance();
             int numberOfBalls = 20;
 
             logicApi.GenerateBalls(numberOfBalls);
-            List<Ball> ballList1 = logicApi.GetBallList();
-  
-
+            List<IBall> ballList1 = logicApi.GetBallList();
             Assert.AreEqual(ballList1.Count, numberOfBalls);
         }
     }
 }
-*/

@@ -1,5 +1,4 @@
-﻿/*
-using Logika;
+﻿using Logika;
 
 namespace Tests
 {
@@ -11,7 +10,7 @@ namespace Tests
         {
             int x = 123;
             int y = 456;
-            Ball ball1 = new Ball(x, y);
+            IBall ball1 = IBall.CreateBall(x, y);
             Assert.AreEqual(ball1.x, x);
             Assert.AreEqual(ball1.y, y);
         }
@@ -20,7 +19,7 @@ namespace Tests
         {
             int x = 50;
             int y = 100;
-            Ball ball2 = new Ball(0, 0);
+            IBall ball2 = IBall.CreateBall(0, 0);
             ball2.x = x;
             ball2.y = y;
             Assert.AreEqual(ball2.x, x);
@@ -28,4 +27,3 @@ namespace Tests
         }
     }
 }
-*/
