@@ -1,22 +1,14 @@
-﻿
-using Dane;
-
-namespace Logika
+﻿namespace Logika
 {
     public abstract class LogicApi
     {
-        private static LogicApi Instance = new Logic();
+        private static LogicApi _apiInstance = new Logic();
 
-        public static LogicApi CreateNewInstance()
+        public static LogicApi ApiInstance
         {
-            return new Logic();
+            get { return _apiInstance; }
         }
-
-        public static LogicApi instance
-        {
-            get { return Instance; }
-        }
-
+        
         public abstract void GenerateBalls(int number);
 
         public abstract void CreateThreads();
@@ -99,6 +91,7 @@ namespace Logika
                             Thread.Sleep(16);
                         }
                     });
+                    thread.IsBackground = true;
                     thread.Start();
                 }
             }

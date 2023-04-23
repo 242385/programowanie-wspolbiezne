@@ -8,14 +8,14 @@ namespace Tests
         [TestMethod]
         public void CreateNewInstanceTest()
         {
-            LogicApi logicApi1 = LogicApi.CreateNewInstance();
+            LogicApi logicApi1 = LogicApi.ApiInstance;
 
             Assert.IsNotNull(logicApi1);
         }
         [TestMethod]
         public void GenerateBallsTest()
         {
-            LogicApi logicApi = LogicApi.CreateNewInstance();
+            LogicApi logicApi = LogicApi.ApiInstance;
             int numberOfBalls = 20;
 
             logicApi.GenerateBalls(numberOfBalls);
