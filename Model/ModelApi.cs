@@ -5,11 +5,11 @@ namespace Model
 {
     public abstract class ModelApi
     {
-        private static ModelApi Instance = new Model();
+       private static ModelApi _apiInstance = new Model();
 
-        public static ModelApi instance
+       public static ModelApi ApiInstance
         {
-            get { return Instance; }
+            get { return _apiInstance; }
         }
 
         public abstract void ConvertBallsToModelBalls();
@@ -18,8 +18,7 @@ namespace Model
 
         internal sealed class Model : ModelApi
         {
-         
-            LogicApi logicApi = LogicApi.instance;
+            private LogicApi logicApi = LogicApi.ApiInstance;
 
             ObservableCollection<IModelBall> ModelBallCollection = new ObservableCollection<IModelBall>();
 

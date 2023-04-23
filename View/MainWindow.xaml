@@ -9,7 +9,7 @@
         Title="Balls" Height="782" Width="748" ResizeMode="NoResize">
     <Grid Height="650" Width="600">
         <Grid.DataContext>
-            <ViewModel:ViewModelApi/>
+            <ViewModel:ViewModelMainWindow/>
         </Grid.DataContext>
         <Button Content="Start Balls" Command="{Binding SignalStart}" Margin="10,-43,440,650" Background="White" RenderTransformOrigin="0.563,-0.145"/>
         <Button Content="Stop Balls" Command="{Binding SignalStop}" Margin="190,-43,260,650" Background="White"/>

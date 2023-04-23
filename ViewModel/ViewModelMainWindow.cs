@@ -7,12 +7,12 @@ using System.Windows.Input;
 
 namespace ViewModel
 {
-    public class ViewModelApi : INotifyPropertyChanged
+    public class ViewModelMainWindow : INotifyPropertyChanged
     {
-        ModelApi modelApi = ModelApi.instance;
-        LogicApi logicApi = LogicApi.instance;
+        private ModelApi modelApi = ModelApi.ApiInstance;
+        private LogicApi logicApi = LogicApi.ApiInstance;
 
-        public ViewModelApi()
+        public ViewModelMainWindow()
         {
             this.SignalStart = new Signals(Start);
             this.SignalStop = new Signals(Stop);
