@@ -39,7 +39,7 @@ namespace Logika
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private readonly DataApi dataApi = DataApi.CreateNewInstance();
+        private readonly AbstractDataAPI dataApi = AbstractDataAPI.CreateNewInstance();
 
     }
 }

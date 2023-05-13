@@ -1,4 +1,4 @@
-﻿using Logika;
+﻿/*using Logika;
 
 namespace Tests
 { 
@@ -24,3 +24,4 @@ namespace Tests
         }
     }
 }
+/*
