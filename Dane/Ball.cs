@@ -1,45 +1,70 @@
-﻿using Dane;
-using System.ComponentModel;
+﻿using System;
 
-namespace Logika
+namespace Dane
 {
-    internal class Ball : IBall, INotifyPropertyChanged
+    internal class Ball : IBall
     {
-        internal Ball(int x, int y)
+        public override double Mass { get; set; }
+        public override double Radius { get; set; }
+        public override bool StopTask { get; set; }
+        public override bool StartMoving { get; set; }
+        public override bool IsInACollision { get; set; }
+
+
+        public Ball(double mass, double radius)
         {
-            this.x = x; this.y = y;
+            this.Mass = mass;
+            this.StopTask = false;
+            this.StartMoving = false;
+            this.IsInACollision = false;
+            this.Radius = radius;
+            Task.Run(Moving);
         }
 
-        private int X;
-        private int Y;
+        internal IObserver<IBall>? ObserverObject;
 
-        public override int x
+        private async void Moving()
         {
-            get { return this.X; }
-            set
+            while (!this.StopTask)
             {
-                this.X = value;
-                OnPropertyChanged(nameof(x));
+                if (this.StartMoving)
+                {
+                    this.UpdateCoords();
+                }
+                if (this.ObserverObject != null)
+                {
+                    this.ObserverObject.OnNext(this);
+                }
+                this.IsInACollision = false;
+                await Task.Delay(1);
             }
         }
 
-        public override int y
+        private void UpdateCoords()
         {
-            get { return this.Y; }
-            set
+            
+        }
+
+        public override IDisposable Subscribe(IObserver<IBall> observerObj)
+        {
+            this.ObserverObject = observerObj;
+            return new ObserverManager(observerObj);
+        }
+
+        private class ObserverManager : IDisposable
+        {
+            IObserver<IBall>? obs;
+
+            public ObserverManager(IObserver<IBall> observerObj)
             {
-                this.Y = value;
-                OnPropertyChanged(nameof(y));
+                this.obs = observerObj;
+            }
+
+            public void Dispose()
+            {
+                this.obs = null;
             }
         }
-
-        public override event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private readonly AbstractDataAPI dataApi = AbstractDataAPI.CreateNewInstance();
 
     }
 }

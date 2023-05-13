@@ -1,17 +1,24 @@
 ﻿using System.ComponentModel;
 
-namespace Logika
+namespace Dane
 {
-    public abstract class IBall
+    public abstract class IBall : IObservable<IBall>
     {
-        public static IBall CreateBall(int xPos, int yPos)
+        public abstract IPositioning Coordinates { get; }
+        public abstract IPositioning VelVector { get; set; }
+        public abstract double Mass { get; set; }
+        public abstract bool StopTask { get; set; }
+        public abstract double Radius { get; set; }
+
+        public abstract bool StartMoving { get; set; }
+
+        public abstract bool IsInACollision { get; set; }
+
+        public static IBall CreateBall(double mass, double radius, IPositioning coords, IPositioning vector)
         {
-            return new Ball(xPos, yPos);
+            return new Ball(mass, radius, coords, vector);
         }
 
-        public abstract event PropertyChangedEventHandler PropertyChanged;
-
-        public abstract int x { get; set; }
-        public abstract int y { get; set; }
+        public abstract IDisposable Subscribe(IObserver<IBall> observerObj);
     }
 }
