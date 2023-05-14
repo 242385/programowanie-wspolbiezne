@@ -14,7 +14,7 @@ namespace Logika
         internal List<IDisposable>? ballObservers;
         internal IObserver<int>? observedObject;
         internal List<IBall> balls { get; set; }
-        internal object locked = new object();  //sekcja krytyczna nizej
+        internal object locked = new object();
 
         public LogicBoard(AbstractDataAPI dataAPI)
         {
@@ -79,7 +79,6 @@ namespace Logika
                 ball.StartMoving = true;
             }
         }
-
         private void OutOfBounds(IBall ball)
         {
             if (ball.Coordinates.X > dataApi.GetBoardW() - ball.Radius)
@@ -99,16 +98,16 @@ namespace Logika
                 ball.Coordinates = new Vector2(ball.Coordinates.X, ball.Radius);
             }
         }
-
+        
         private void WallCollision(IBall ball)
         {
-            if (ball.Coordinates.X - ball.Radius <= 0 ||
+            if (ball.Coordinates.X - ball.Radius < 0||
                 (ball.Coordinates.X + ball.Radius) > dataApi.GetBoardW())
             {
                 ball.VelVector = new Vector2(-ball.VelVector.X, ball.VelVector.Y);
                 //kolizja ze sciana: odwracamy wektor kierunku
             }
-            if (ball.Coordinates.Y - ball.Radius <= 0 ||
+            if (ball.Coordinates.Y - ball.Radius < 0 ||
                (ball.Coordinates.Y + ball.Radius) > dataApi.GetBoardW())
             {
                 ball.VelVector = new Vector2(ball.VelVector.X, -ball.VelVector.Y);

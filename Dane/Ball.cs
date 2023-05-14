@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Numerics;
 
 namespace Dane
@@ -39,7 +40,7 @@ namespace Dane
                 {
                     this.ObserverObject.OnNext(this);
                 }
-                this.IsInACollision = false;
+                this.IsInACollision = false;         
                 await Task.Delay(10);
             }
         }
