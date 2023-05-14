@@ -29,7 +29,7 @@ namespace Logika
             internal List<IDisposable>? ballObservers;
             internal IObserver<int>? observedObject;
             internal List<IBall> balls { get; set; }
-            internal object locked = new object();  //sekcja krytyczna
+            internal object locked = new object();  //sekcja krytyczna nizej
 
             public LogicAPI(AbstractDataAPI dataAPI)
             {
@@ -92,61 +92,6 @@ namespace Logika
                 foreach (IBall ball in balls)
                 {
                     ball.StartMoving = true;
-                }
-            }
-
-            public override void OnCompleted()
-            {
-                if (balls != null)
-                {
-                    foreach (IDisposable obj in balls)
-                    {
-                        obj.Dispose();
-                    }
-                }
-            }
-
-            public override void OnError(Exception error)
-            {
-                throw new NotImplementedException();
-            }
-
-            public override void OnNext(IBall ball)
-            {
-                int i = balls.IndexOf(ball);
-                lock (locked)
-                {
-                    if (!ball.IsInACollision)
-                    {
-                        WallCollision(balls[i]);
-                        BallsCollision(balls[i]);
-                    }
-                    this.OutOfBounds(ball);
-                }
-                if (this.observedObject != null)
-                {
-                    this.observedObject.OnNext(i);
-                }
-            }
-
-            public override IDisposable Subscribe(IObserver<int> observerObj)
-            {
-                this.observedObject = observerObj;
-                return new ObserverManager(observerObj);
-            }
-
-            private class ObserverManager : IDisposable
-            {
-                IObserver<int>? obs;
-
-                public ObserverManager(IObserver<int> observer)
-                {
-                    this.obs = observer;
-                }
-
-                public void Dispose()
-                {
-                    this.obs = null;
                 }
             }
 
@@ -227,6 +172,60 @@ namespace Logika
                     collidingBall.VelVector = newVcollidingBall;
                     ball.IsInACollision = true;
                     collidingBall.IsInACollision = true;
+                }
+            }
+            public override void OnCompleted()
+            {
+                if (balls != null)
+                {
+                    foreach (IDisposable obj in balls)
+                    {
+                        obj.Dispose();
+                    }
+                }
+            }
+
+            public override void OnError(Exception error)
+            {
+                throw new NotImplementedException();
+            }
+
+            public override void OnNext(IBall ball)
+            {
+                int i = balls.IndexOf(ball);
+                lock (locked)
+                {
+                    if (!ball.IsInACollision)
+                    {
+                        WallCollision(balls[i]);
+                        BallsCollision(balls[i]);
+                    }
+                    this.OutOfBounds(ball);
+                }
+                if (this.observedObject != null)
+                {
+                    this.observedObject.OnNext(i);
+                }
+            }
+
+            public override IDisposable Subscribe(IObserver<int> observerObj)
+            {
+                this.observedObject = observerObj;
+                return new ObserverManager(observerObj);
+            }
+
+            private class ObserverManager : IDisposable
+            {
+                IObserver<int>? obs;
+
+                public ObserverManager(IObserver<int> observer)
+                {
+                    this.obs = observer;
+                }
+
+                public void Dispose()
+                {
+                    this.obs = null;
                 }
             }
         }
