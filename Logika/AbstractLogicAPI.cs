@@ -170,7 +170,65 @@ namespace Logika
                 }
             }
 
-            
+            private void WallCollision(IBall ball)
+            {
+                if (ball.Coordinates.X - ball.Radius <= 0 ||
+                    (ball.Coordinates.X + ball.Radius) > dataApi.GetBoardW())
+                {
+                    ball.VelVector.X = -ball.VelVector.X;
+                    //kolizja ze sciana: odwracamy wektor predkosci
+                }
+                if (ball.Coordinates.Y - ball.Radius <= 0 ||
+                   (ball.Coordinates.Y + ball.Radius) > dataApi.GetBoardW())
+                {
+                    ball.VelVector.Y = -ball.VelVector.Y;
+                    //kolizja ze sciana: odwracamy wektor predkosci
+                }
+            }
+
+            private void BallsCollision(IBall ball)
+            {
+                List<IBall> collidingBalls = new List<IBall>();
+                double distance;
+
+                for (int i = 0; i < balls.Count; i++)
+                {
+                    distance = ball.Coordinates.Distance(balls[i].Coordinates);
+                    IPositioning nextPos = ball.Coordinates.Add(ball.VelVector);
+                    IPositioning nextPos2 = balls[i].Coordinates.Add(balls[i].VelVector);
+
+                    if (balls[i] != ball && distance <= 2 * ball.Radius &&
+                        distance - nextPos.Distance(nextPos2) > 0)
+                    {
+                        collidingBalls.Add(balls[i]);
+                    }
+                }
+
+                foreach (IBall collidingBall in collidingBalls)
+                {
+                    IPositioning ballDistance = ball.Coordinates.Subtract(collidingBall.Coordinates);
+                    IPositioning Vdifference = ball.VelVector.Subtract(collidingBall.VelVector);
+
+                    IPositioning secondPart = ballDistance.Multiply(Vdifference.Dot(ballDistance)
+                        / Math.Pow(ballDistance.VectorLength(), 2));
+                    IPositioning newV = ball.VelVector.Subtract(secondPart.Multiply(2f * collidingBall.Mass /
+                        (ball.Mass + collidingBall.Mass)));
+
+                    ballDistance = collidingBall.Coordinates.Subtract(ball.Coordinates);
+                    Vdifference = collidingBall.VelVector.Subtract(ball.VelVector);
+
+                    secondPart = ballDistance.Multiply(Vdifference.Dot(ballDistance)
+                        / Math.Pow(ballDistance.VectorLength(), 2));
+
+                    IPositioning newVcollidingBall = collidingBall.VelVector.Subtract(secondPart.Multiply(2f * ball.Mass
+                        / (ball.Mass + collidingBall.Mass)));
+
+                    ball.VelVector = newV;
+                    collidingBall.VelVector = newVcollidingBall;
+                    ball.IsInACollision = true;
+                    collidingBall.IsInACollision = true;
+                }
+            }
         }
     }
 }
