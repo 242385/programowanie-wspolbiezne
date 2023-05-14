@@ -9,11 +9,14 @@ namespace Dane
         public override bool StopTask { get; set; }
         public override bool StartMoving { get; set; }
         public override bool IsInACollision { get; set; }
+        public override IPositioning Coordinates { get; }
+        public override IPositioning VelVector { get; set; }
 
-
-        public Ball(double mass, double radius)
+        public Ball(double mass, double radius, IPositioning coords, IPositioning vector)
         {
             this.Mass = mass;
+            this.Coordinates = coords;
+            this.VelVector = vector;
             this.StopTask = false;
             this.StartMoving = false;
             this.IsInACollision = false;
@@ -42,7 +45,8 @@ namespace Dane
 
         private void UpdateCoords()
         {
-            
+            this.Coordinates.X += this.VelVector.X;
+            this.Coordinates.Y += this.VelVector.Y;
         }
 
         public override IDisposable Subscribe(IObserver<IBall> observerObj)
