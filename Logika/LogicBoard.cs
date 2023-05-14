@@ -14,7 +14,7 @@ namespace Logika
         internal List<IDisposable>? ballObservers;
         internal IObserver<int>? observedObject;
         internal List<IBall> balls { get; set; }
-        internal object locked = new object();  //sekcja krytyczna nizej
+        internal object locked = new object();
 
         public LogicBoard(AbstractDataAPI dataAPI)
         {
