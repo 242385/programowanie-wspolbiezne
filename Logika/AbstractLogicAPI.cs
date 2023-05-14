@@ -1,105 +1,176 @@
-﻿namespace Logika
+﻿using Dane;
+
+namespace Logika
 {
-    public abstract class LogicApi
+    public abstract class AbstractLogicAPI : IObserver<IBall>, IObservable<int>
     {
-        private static LogicApi _apiInstance = new Logic();
+        public abstract void CreateBoard();
+        public abstract void CreateBalls(int num);
+        public abstract void ClearBoard();
+        public abstract void StartBalls();
+        public abstract List<List<double>> GetBallsCoordsAndRadius();
 
-        public static LogicApi ApiInstance
+        public abstract void OnCompleted();
+
+        public abstract void OnError(Exception error);
+
+        public abstract void OnNext(IBall value);
+
+        public abstract IDisposable Subscribe(IObserver<int> observerObj);
+
+        public static AbstractLogicAPI CreateNewInstance(AbstractDataAPI? DataAPI = default)
         {
-            get { return _apiInstance; }
+            return new LogicAPI(DataAPI == null ? AbstractDataAPI.CreateNewInstance() : DataAPI);
         }
-        
-        public abstract void GenerateBalls(int number);
 
-        public abstract void CreateThreads();
-
-        public abstract void StopThreads();
-
-        public abstract List<IBall> GetBallList();
-
-        internal sealed class Logic : LogicApi
+        internal sealed class LogicAPI : AbstractLogicAPI
         {
-            private bool stopThreads = false;
+            internal AbstractDataAPI dataApi;
+            internal List<IDisposable>? ballObservers;
+            internal IObserver<int>? observedObject;
+            internal List<IBall> balls { get; set; }
+            internal object locked = new object();  //sekcja krytyczna
 
-            private List<IBall> ballList = new List<IBall>();
-
-            public override List<IBall> GetBallList()
+            public LogicAPI(AbstractDataAPI dataAPI)
             {
-                return ballList;
+                this.dataApi = dataAPI;
+                balls = new List<IBall>();
+                ballObservers = new List<IDisposable>();
             }
-            public override void GenerateBalls(int number)
-            {
-                List<IBall> ballList = GetBallList();
-                ballList.Clear();
-                Random random = new Random();
 
-                for (int i = 0; i < number; i++)
+            public override void CreateBoard()
+            {
+                dataApi.CreateBoard();
+            }
+
+            public override void CreateBalls(int num)
+            {
+                for (int i = 0; i < num; i++)
                 {
-                    int x = random.Next(10, 590);
-                    int y = random.Next(10, 590);
-                    IBall ball = IBall.CreateBall(x, y);
-                    ballList.Add(ball);
+                    IBall ball = dataApi.CreateBall();
+                    balls.Add(ball);
+                }
+                foreach (IBall ball in balls)
+                {
+                    IDisposable obs = ball.Subscribe(this);
+                    ballObservers?.Add(obs);
                 }
             }
 
-            public override void CreateThreads()
+            public override void ClearBoard()
             {
-                List<IBall> ballList= GetBallList();
-                stopThreads = false;
-
-                foreach (IBall ball in ballList)
+                foreach (IBall ball in balls)
                 {
-                    Thread thread = new Thread(() =>
+                    ball.StopTask = true;
+                }
+                balls.Clear();
+            }
+
+            public override List<List<double>> GetBallsCoordsAndRadius()
+            {
+                List<List<double>> coordsList = new List<List<double>>();
+
+                for (int i = 0; i < balls.Count; i++)
+                {
+                    double x = balls[i].Coordinates.X;
+                    double y = balls[i].Coordinates.Y;
+                    double r = balls[i].Radius;
+                    double vX = balls[i].VelVector.X;
+                    double vY = balls[i].VelVector.Y;
+
+                    List<double> list = new List<double>()
                     {
-                        Random random = new Random();
-                        int counter = 0;
-                        int dx = random.Next(-5, 5);
-                        int dy = random.Next(-5, 5);
-                        while (!stopThreads)
-                        {
-                            counter+= random.Next(1, 5);
-                            if(counter >= 50)
-                            {
-                                dx = random.Next(-5, 6);
-                                dy = random.Next(-5, 6);
-                                counter = 0;
-                            }
-                            if (ball.x < 40)
-                            {
-                                dx = random.Next(5, 10);
-                                dy = random.Next(-5, 5);
-                            }
-                            if (ball.x > 560)
-                            {
-                                dx = random.Next(-10, -5);
-                                dy = random.Next(-5, 5);
-                            }
-                            if (ball.y < 40)
-                            {
-                                dx = random.Next(-5, 5);
-                                dy = random.Next(5, 10);
-                            }
-                            if (ball.y > 560)
-                            {
-                                dx = random.Next(-5, 5);
-                                dy = random.Next(-10, -5);
-                            }
+                        x, y, r, vX, vY
+                    };
+                    coordsList.Add(list);
+                }
+                return coordsList;
+            }
 
-                            ball.x += dx;
-                            ball.y += dy;
-
-                            Thread.Sleep(16);
-                        }
-                    });
-                    thread.IsBackground = true;
-                    thread.Start();
+            public override void StartBalls()
+            {
+                foreach (IBall ball in balls)
+                {
+                    ball.StartMoving = true;
                 }
             }
 
-            public override void StopThreads()
+            public override void OnCompleted()
             {
-                stopThreads = true;
-            }            
+                if (balls != null)
+                {
+                    foreach (IDisposable obj in balls)
+                    {
+                        obj.Dispose();
+                    }
+                }
+            }
+
+            public override void OnError(Exception error)
+            {
+                throw new NotImplementedException();
+            }
+
+            public override void OnNext(IBall ball)
+            {
+                int i = balls.IndexOf(ball);
+                lock (locked)
+                {
+                    if (!ball.IsInACollision)
+                    {
+                        WallCollision(balls[i]);
+                        BallsCollision(balls[i]);
+                    }
+                    this.OutOfBounds(ball);
+                }
+                if (this.observedObject != null)
+                {
+                    this.observedObject.OnNext(i);
+                }
+            }
+
+            public override IDisposable Subscribe(IObserver<int> observerObj)
+            {
+                this.observedObject = observerObj;
+                return new ObserverManager(observerObj);
+            }
+
+            private class ObserverManager : IDisposable
+            {
+                IObserver<int>? obs;
+
+                public ObserverManager(IObserver<int> observer)
+                {
+                    this.obs = observer;
+                }
+
+                public void Dispose()
+                {
+                    this.obs = null;
+                }
+            }
+
+            private void OutOfBounds(IBall ball)
+            {
+                if (ball.Coordinates.X > dataApi.GetBoardW() - ball.Radius)
+                {
+                    ball.Coordinates.X = dataApi.GetBoardW() - ball.Radius;
+                }
+                else if (ball.Coordinates.X < ball.Radius)
+                {
+                    ball.Coordinates.X = ball.Radius;
+                }
+                if (ball.Coordinates.Y > dataApi.GetBoardH() - ball.Radius)
+                {
+                    ball.Coordinates.Y = dataApi.GetBoardH() - ball.Radius;
+                }
+                else if (ball.Coordinates.Y < ball.Radius)
+                {
+                    ball.Coordinates.Y = ball.Radius;
+                }
+            }
+
+            
         }
     }
 }
