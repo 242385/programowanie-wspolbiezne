@@ -52,7 +52,7 @@ namespace Tests
         {
             private Vector2 PrivCoords;
             public override Vector2 Coordinates { get; set; }
-            public override Vector2 DirVector { get; set; }
+            public override Vector2 VelVector { get; set; }
             public override float DeltaTime { get; set; }
             public override float Mass { get; set; }
             public override bool StopTask { get; set; }
@@ -86,7 +86,7 @@ namespace Tests
             {
                 this.Mass = mass;
                 this.PrivCoords = coords;
-                this.DirVector = vector;
+                this.VelVector = vector;
                 this.DeltaTime = delta;
                 this.StopTask = false;
                 this.StartMoving = false;
@@ -107,7 +107,7 @@ namespace Tests
             }
             private void UpdateCoords()
             {
-                this.PrivCoords += this.DirVector * this.DeltaTime;
+                this.PrivCoords += this.VelVector * this.DeltaTime;
             }
         }
 

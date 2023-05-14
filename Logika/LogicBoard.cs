@@ -60,8 +60,8 @@ namespace Logika
                 double x = balls[i].Coordinates.X;
                 double y = balls[i].Coordinates.Y;
                 double r = balls[i].Radius;
-                double vX = balls[i].DirVector.X;
-                double vY = balls[i].DirVector.Y;
+                double vX = balls[i].VelVector.X;
+                double vY = balls[i].VelVector.Y;
                 double delta = balls[i].DeltaTime;
 
                 List<double> list = new List<double>()
@@ -106,13 +106,13 @@ namespace Logika
             if (ball.Coordinates.X - ball.Radius <= 0 ||
                 (ball.Coordinates.X + ball.Radius) > dataApi.GetBoardW())
             {
-                ball.DirVector = new Vector2(-ball.DirVector.X, ball.DirVector.Y);
+                ball.VelVector = new Vector2(-ball.VelVector.X, ball.VelVector.Y);
                 //kolizja ze sciana: odwracamy wektor kierunku
             }
             if (ball.Coordinates.Y - ball.Radius <= 0 ||
                (ball.Coordinates.Y + ball.Radius) > dataApi.GetBoardW())
             {
-                ball.DirVector = new Vector2(ball.DirVector.X, -ball.DirVector.Y);
+                ball.VelVector = new Vector2(ball.VelVector.X, -ball.VelVector.Y);
                 //kolizja ze sciana: odwracamy wektor kierunku
             }
         }
@@ -125,8 +125,8 @@ namespace Logika
             for (int i = 0; i < balls.Count; i++)
             {
                 distance = Vector2.Distance(ball.Coordinates, balls[i].Coordinates);
-                Vector2 nextPos = ball.Coordinates + ball.DirVector * ball.DeltaTime;
-                Vector2 nextPos2 = balls[i].Coordinates + balls[i].DirVector * balls[i].DeltaTime;
+                Vector2 nextPos = ball.Coordinates + ball.VelVector * ball.DeltaTime;
+                Vector2 nextPos2 = balls[i].Coordinates + balls[i].VelVector * balls[i].DeltaTime;
 
                 if (balls[i] != ball && distance <= 2 * ball.Radius &&
                     distance - Vector2.Distance(nextPos, nextPos2) > 0)
@@ -138,20 +138,20 @@ namespace Logika
             foreach (IBall collidingBall in collidingBalls)
             {
                 Vector2 ballDistance = ball.Coordinates - collidingBall.Coordinates;
-                Vector2 Vdifference = ball.DirVector - collidingBall.DirVector;
+                Vector2 Vdifference = ball.VelVector - collidingBall.VelVector;
 
                 Vector2 secondPart = ballDistance * Vector2.Dot(Vdifference, ballDistance) / ballDistance.LengthSquared();
-                Vector2 newV = ball.DirVector - secondPart * (2f * collidingBall.Mass / (ball.Mass + collidingBall.Mass));
+                Vector2 newV = ball.VelVector - secondPart * (2f * collidingBall.Mass / (ball.Mass + collidingBall.Mass));
 
                 ballDistance = collidingBall.Coordinates - ball.Coordinates;
-                Vdifference = collidingBall.DirVector - ball.DirVector;
+                Vdifference = collidingBall.VelVector - ball.VelVector;
 
                 secondPart = ballDistance * Vector2.Dot(Vdifference, ballDistance) / ballDistance.LengthSquared();
 
-                Vector2 newVcollidingBall = collidingBall.DirVector - secondPart * (2f * ball.Mass / (ball.Mass + collidingBall.Mass));
+                Vector2 newVcollidingBall = collidingBall.VelVector - secondPart * (2f * ball.Mass / (ball.Mass + collidingBall.Mass));
 
-                ball.DirVector = Vector2.Normalize(newV);
-                collidingBall.DirVector = Vector2.Normalize(newVcollidingBall);
+                ball.VelVector = Vector2.Normalize(newV);
+                collidingBall.VelVector = Vector2.Normalize(newVcollidingBall);
 
                 float ballInitialDeltaTime = ball.DeltaTime;
                 float collidingBallInitialDeltaTime = collidingBall.DeltaTime;
@@ -174,11 +174,6 @@ namespace Logika
                     obj.Dispose();
                 }
             }
-        }
-
-        public override void OnError(Exception error)
-        {
-            throw new NotImplementedException();
         }
 
         public override void OnNext(IBall ball)
@@ -218,6 +213,11 @@ namespace Logika
             {
                 this.obs = null;
             }
+        }
+
+        public override void OnError(Exception error)
+        {
+            throw new NotImplementedException();
         }
     }
 }

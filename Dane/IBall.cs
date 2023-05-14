@@ -6,7 +6,7 @@ namespace Dane
     public abstract class IBall : IObservable<IBall>
     {
         public abstract Vector2 Coordinates { get; set; }
-        public abstract Vector2 DirVector { get; set;}
+        public abstract Vector2 VelVector { get; set;}
         public abstract float DeltaTime { get; set; }
         public abstract float Mass { get; set; }
         public abstract bool StopTask { get; set; }
