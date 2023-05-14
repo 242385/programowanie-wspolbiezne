@@ -25,7 +25,7 @@ namespace Logika
 
         internal sealed class LogicAPI : AbstractLogicAPI
         {
-            internal AbstractDataAPI dataApi;
+            internal AbstractDataAPI dataApi;    
             internal List<IDisposable>? ballObservers;
             internal IObserver<int>? observedObject;
             internal List<IBall> balls { get; set; }
@@ -74,7 +74,7 @@ namespace Logika
                 {
                     double x = balls[i].Coordinates.X;
                     double y = balls[i].Coordinates.Y;
-                    double r = balls[i].Radius;
+                    double r = balls[i].Radius; 
                     double vX = balls[i].VelVector.X;
                     double vY = balls[i].VelVector.Y;
 

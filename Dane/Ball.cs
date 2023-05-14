@@ -39,7 +39,7 @@ namespace Dane
                     this.ObserverObject.OnNext(this);
                 }
                 this.IsInACollision = false;
-                await Task.Delay(1);
+                await Task.Delay(10);
             }
         }
 
