@@ -28,12 +28,7 @@ namespace Dane
             public override IBall CreateBall()
             {
                 IPositioning coords = RandomPos(preDeterminedRadius);
-                IPositioning v;
-                do
-                {
-                    v = NewVector();
-                }
-                while (v.X == 0 && v.Y == 0);
+                IPositioning v = RandomVector();
                 IBall ball = IBall.CreateBall(preDeterminedMass, preDeterminedRadius, coords, v);
                 return ball;
             }
@@ -74,10 +69,18 @@ namespace Dane
                 return IPositioning.CreatePos(x, y);
             }
 
-            internal IPositioning NewVector()
+            internal IPositioning RandomVector()
             {
-                double x = RNG.NextDouble() * 10 - 4;
-                double y = RNG.NextDouble() * 10 - 4;
+                // Generate random vector while making sure it's not a zero vector
+                bool randomBool;
+                double generatedX = (RNG.NextDouble() - 1.0) * 5.0;
+                double generatedY = (RNG.NextDouble() - 1.0) * 5.0;
+
+                randomBool = RNG.Next(0, 2) == 1;
+                double x = randomBool ? generatedX * (-1.0) : generatedX;
+                randomBool = RNG.Next(0, 2) == 1;
+                double y = randomBool ? generatedX * (-1.0) : generatedX;
+
                 return IPositioning.CreatePos(x, y);
             }
         }
