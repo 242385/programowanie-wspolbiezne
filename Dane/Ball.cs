@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Numerics;
 
 namespace Dane
@@ -8,17 +7,19 @@ namespace Dane
     {
         public override float Mass { get; set; }
         public override float Radius { get; set; }
+        public override float DeltaTime { get; set; }
         public override bool StopTask { get; set; }
         public override bool StartMoving { get; set; }
         public override bool IsInACollision { get; set; }
         public override Vector2 Coordinates { get; set; }
-        public override Vector2 VelVector { get; set; }
+        public override Vector2 DirVector { get; set; }
 
-        public Ball(float mass, float radius, Vector2 coords, Vector2 vector)
+        public Ball(float mass, float radius, Vector2 coords, Vector2 vector, float delta)
         {
             this.Mass = mass;
             this.Coordinates = coords;
-            this.VelVector = vector;
+            this.DirVector = vector;
+            this.DeltaTime = delta;
             this.StopTask = false;
             this.StartMoving = false;
             this.IsInACollision = false;
@@ -40,14 +41,14 @@ namespace Dane
                 {
                     this.ObserverObject.OnNext(this);
                 }
-                this.IsInACollision = false;         
-                await Task.Delay(10);
+                this.IsInACollision = false;
+                await Task.Delay((int)DeltaTime);
             }
         }
 
         private void UpdateCoords()
         {
-            this.Coordinates += this.VelVector;
+            this.Coordinates += this.DirVector * this.DeltaTime;
         }
 
         public override IDisposable Subscribe(IObserver<IBall> observerObj)

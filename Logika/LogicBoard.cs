@@ -14,7 +14,7 @@ namespace Logika
         internal List<IDisposable>? ballObservers;
         internal IObserver<int>? observedObject;
         internal List<IBall> balls { get; set; }
-        internal object locked = new object();
+        internal object locked = new object();  //sekcja krytyczna nizej
 
         public LogicBoard(AbstractDataAPI dataAPI)
         {
@@ -60,12 +60,13 @@ namespace Logika
                 double x = balls[i].Coordinates.X;
                 double y = balls[i].Coordinates.Y;
                 double r = balls[i].Radius;
-                double vX = balls[i].VelVector.X;
-                double vY = balls[i].VelVector.Y;
+                double vX = balls[i].DirVector.X;
+                double vY = balls[i].DirVector.Y;
+                double delta = balls[i].DeltaTime;
 
                 List<double> list = new List<double>()
                     {
-                        x, y, r, vX, vY
+                        x, y, r, vX, vY, delta
                     };
                 coordsList.Add(list);
             }
@@ -79,6 +80,7 @@ namespace Logika
                 ball.StartMoving = true;
             }
         }
+
         private void OutOfBounds(IBall ball)
         {
             if (ball.Coordinates.X > dataApi.GetBoardW() - ball.Radius)
@@ -98,19 +100,19 @@ namespace Logika
                 ball.Coordinates = new Vector2(ball.Coordinates.X, ball.Radius);
             }
         }
-        
+
         private void WallCollision(IBall ball)
         {
-            if (ball.Coordinates.X - ball.Radius < 0||
+            if (ball.Coordinates.X - ball.Radius <= 0 ||
                 (ball.Coordinates.X + ball.Radius) > dataApi.GetBoardW())
             {
-                ball.VelVector = new Vector2(-ball.VelVector.X, ball.VelVector.Y);
+                ball.DirVector = new Vector2(-ball.DirVector.X, ball.DirVector.Y);
                 //kolizja ze sciana: odwracamy wektor kierunku
             }
-            if (ball.Coordinates.Y - ball.Radius < 0 ||
+            if (ball.Coordinates.Y - ball.Radius <= 0 ||
                (ball.Coordinates.Y + ball.Radius) > dataApi.GetBoardW())
             {
-                ball.VelVector = new Vector2(ball.VelVector.X, -ball.VelVector.Y);
+                ball.DirVector = new Vector2(ball.DirVector.X, -ball.DirVector.Y);
                 //kolizja ze sciana: odwracamy wektor kierunku
             }
         }
@@ -123,8 +125,8 @@ namespace Logika
             for (int i = 0; i < balls.Count; i++)
             {
                 distance = Vector2.Distance(ball.Coordinates, balls[i].Coordinates);
-                Vector2 nextPos = ball.Coordinates + ball.VelVector;
-                Vector2 nextPos2 = balls[i].Coordinates + balls[i].VelVector;
+                Vector2 nextPos = ball.Coordinates + ball.DirVector * ball.DeltaTime;
+                Vector2 nextPos2 = balls[i].Coordinates + balls[i].DirVector * balls[i].DeltaTime;
 
                 if (balls[i] != ball && distance <= 2 * ball.Radius &&
                     distance - Vector2.Distance(nextPos, nextPos2) > 0)
@@ -136,20 +138,28 @@ namespace Logika
             foreach (IBall collidingBall in collidingBalls)
             {
                 Vector2 ballDistance = ball.Coordinates - collidingBall.Coordinates;
-                Vector2 Vdifference = ball.VelVector - collidingBall.VelVector;
+                Vector2 Vdifference = ball.DirVector - collidingBall.DirVector;
 
                 Vector2 secondPart = ballDistance * Vector2.Dot(Vdifference, ballDistance) / ballDistance.LengthSquared();
-                Vector2 newV = ball.VelVector - secondPart * (2f * collidingBall.Mass / (ball.Mass + collidingBall.Mass));
+                Vector2 newV = ball.DirVector - secondPart * (2f * collidingBall.Mass / (ball.Mass + collidingBall.Mass));
 
                 ballDistance = collidingBall.Coordinates - ball.Coordinates;
-                Vdifference = collidingBall.VelVector - ball.VelVector;
+                Vdifference = collidingBall.DirVector - ball.DirVector;
 
                 secondPart = ballDistance * Vector2.Dot(Vdifference, ballDistance) / ballDistance.LengthSquared();
 
-                Vector2 newVcollidingBall = collidingBall.VelVector - secondPart * (2f * ball.Mass / (ball.Mass + collidingBall.Mass));
+                Vector2 newVcollidingBall = collidingBall.DirVector - secondPart * (2f * ball.Mass / (ball.Mass + collidingBall.Mass));
 
-                ball.VelVector = newV;
-                collidingBall.VelVector = newVcollidingBall;
+                ball.DirVector = Vector2.Normalize(newV);
+                collidingBall.DirVector = Vector2.Normalize(newVcollidingBall);
+
+                float ballInitialDeltaTime = ball.DeltaTime;
+                float collidingBallInitialDeltaTime = collidingBall.DeltaTime;
+
+                ball.DeltaTime = ((ball.Mass - collidingBall.Mass) / (ball.Mass + collidingBall.Mass)) * ballInitialDeltaTime + ((2 * collidingBall.Mass) / (ball.Mass + collidingBall.Mass)) * collidingBallInitialDeltaTime;
+                collidingBall.DeltaTime = ((collidingBall.Mass - ball.Mass) / (ball.Mass + collidingBall.Mass)) * collidingBallInitialDeltaTime + ((2 * ball.Mass) / (ball.Mass + collidingBall.Mass)) * ballInitialDeltaTime;
+
+
                 ball.IsInACollision = true;
                 collidingBall.IsInACollision = true;
             }

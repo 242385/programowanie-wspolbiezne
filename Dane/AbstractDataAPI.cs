@@ -30,7 +30,7 @@ namespace Dane
             {
                 Vector2 coords = RandomPos(preDeterminedRadius);
                 Vector2 v = RandomDirection();
-                IBall ball = IBall.CreateBall(preDeterminedMass, preDeterminedRadius, coords, v);
+                IBall ball = IBall.CreateBall(preDeterminedMass, preDeterminedRadius, coords, v, RandomTickRate());
                 return ball;
             }
 
@@ -83,8 +83,14 @@ namespace Dane
                 double y = randomBool ? generatedY * (-1.0) : generatedY;
 
                 Vector2 v = new Vector2((float)x, (float)y);
+                v = Vector2.Normalize(v);
 
                 return v;
+            }
+
+            internal float RandomTickRate()
+            {
+                return (float)RNG.NextDouble() * 5 + 1;
             }
         }
     }

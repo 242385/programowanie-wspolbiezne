@@ -27,7 +27,7 @@ namespace Tests
                 x = RNG.NextDouble() * 10 - 4;
                 y = RNG.NextDouble() * 10 - 4;
                 Vector2 testV = new Vector2((float)x, (float)y);
-                return new TestBall(preDeterminedMass, preDeterminedRadius, test, testV);
+                return new TestBall(preDeterminedMass, preDeterminedRadius, test, testV, 10);
             }
 
             public override void CreateBoard()
@@ -52,7 +52,8 @@ namespace Tests
         {
             private Vector2 PrivCoords;
             public override Vector2 Coordinates { get; set; }
-            public override Vector2 VelVector { get; set; }
+            public override Vector2 DirVector { get; set; }
+            public override float DeltaTime { get; set; }
             public override float Mass { get; set; }
             public override bool StopTask { get; set; }
             public override float Radius { get; set; }
@@ -81,11 +82,12 @@ namespace Tests
                 }
             }
 
-            public TestBall(float mass, float radius, Vector2 coords, Vector2 vector)
+            public TestBall(float mass, float radius, Vector2 coords, Vector2 vector, float delta)
             {
                 this.Mass = mass;
                 this.PrivCoords = coords;
-                this.VelVector = vector;
+                this.DirVector = vector;
+                this.DeltaTime = delta;
                 this.StopTask = false;
                 this.StartMoving = false;
                 this.IsInACollision = false;
@@ -105,7 +107,7 @@ namespace Tests
             }
             private void UpdateCoords()
             {
-                this.PrivCoords += this.VelVector;
+                this.PrivCoords += this.DirVector * this.DeltaTime;
             }
         }
 

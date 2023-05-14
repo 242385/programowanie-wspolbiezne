@@ -40,7 +40,7 @@ namespace Tests
             int y2 = 2;
             Vector2 coords = new Vector2(x, y);
             Vector2 v = new Vector2(x2, y2);
-            IBall ball1 = IBall.CreateBall(testMass, testRadius, coords, v);
+            IBall ball1 = IBall.CreateBall(testMass, testRadius, coords, v, 10);
             Assert.IsNotNull(ball1);
         }
 
