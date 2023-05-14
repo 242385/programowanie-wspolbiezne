@@ -1,4 +1,5 @@
-﻿using System.Reflection.Metadata.Ecma335;
+﻿using System.Numerics;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Dane
 {
@@ -16,7 +17,7 @@ namespace Dane
 
         private class DataAPI : AbstractDataAPI
         {
-            internal double preDeterminedMass = 12;
+            internal float preDeterminedMass = 12;
             internal int preDeterminedRadius = 12;
             internal static int hardCodedBoardW = 600;
             internal static int hardCodedBoardH = 600;
@@ -27,8 +28,8 @@ namespace Dane
 
             public override IBall CreateBall()
             {
-                IPositioning coords = RandomPos(preDeterminedRadius);
-                IPositioning v = RandomVector();
+                Vector2 coords = RandomPos(preDeterminedRadius);
+                Vector2 v = RandomDirection();
                 IBall ball = IBall.CreateBall(preDeterminedMass, preDeterminedRadius, coords, v);
                 return ball;
             }
@@ -62,14 +63,14 @@ namespace Dane
                 }
             }
 
-            internal IPositioning RandomPos(double r)
+            internal Vector2 RandomPos(float r)
             {
                 double x = RNG.NextDouble() * (GetBoardW() - 2 * r) + r;
                 double y = RNG.NextDouble() * (GetBoardH() - 2 * r) + r;
-                return IPositioning.CreatePos(x, y);
+                return new Vector2((float)x, (float)y);
             }
 
-            internal IPositioning RandomVector()
+            internal Vector2 RandomDirection()
             {
                 // Generate random vector while making sure it's not a zero vector
                 bool randomBool;
@@ -79,9 +80,11 @@ namespace Dane
                 randomBool = RNG.Next(0, 2) == 1;
                 double x = randomBool ? generatedX * (-1.0) : generatedX;
                 randomBool = RNG.Next(0, 2) == 1;
-                double y = randomBool ? generatedX * (-1.0) : generatedX;
+                double y = randomBool ? generatedY * (-1.0) : generatedY;
 
-                return IPositioning.CreatePos(x, y);
+                Vector2 v = new Vector2((float)x, (float)y);
+
+                return v;
             }
         }
     }

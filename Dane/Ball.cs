@@ -1,18 +1,19 @@
 ﻿using System;
+using System.Numerics;
 
 namespace Dane
 {
     internal class Ball : IBall
     {
-        public override double Mass { get; set; }
-        public override double Radius { get; set; }
+        public override float Mass { get; set; }
+        public override float Radius { get; set; }
         public override bool StopTask { get; set; }
         public override bool StartMoving { get; set; }
         public override bool IsInACollision { get; set; }
-        public override IPositioning Coordinates { get; }
-        public override IPositioning VelVector { get; set; }
+        public override Vector2 Coordinates { get; set; }
+        public override Vector2 VelVector { get; set; }
 
-        public Ball(double mass, double radius, IPositioning coords, IPositioning vector)
+        public Ball(float mass, float radius, Vector2 coords, Vector2 vector)
         {
             this.Mass = mass;
             this.Coordinates = coords;
@@ -45,8 +46,7 @@ namespace Dane
 
         private void UpdateCoords()
         {
-            this.Coordinates.X += this.VelVector.X;
-            this.Coordinates.Y += this.VelVector.Y;
+            this.Coordinates += this.VelVector;
         }
 
         public override IDisposable Subscribe(IObserver<IBall> observerObj)

@@ -72,7 +72,6 @@ namespace Model
                     modelBall.Moving(modelBallCoords[0], modelBallCoords[1]);
                 }
             }
-
             public override void StartModelBalls()
             {
                 logicApi.StartBalls();
