@@ -13,7 +13,7 @@ namespace Dane
         private readonly JArray logBalls;
         private readonly string path;
 
-        public override void AddBallToSerializationQueue(IBall ball)
+        public override void AddBallToQueue(IBall ball)
         {
             Monitor.Enter(bufLocker);
             try
@@ -25,7 +25,7 @@ namespace Dane
 
                 if (logging == null || logging.IsCompleted)
                 {
-                    logging = Task.Factory.StartNew(WriteSerializedDataToFile);
+                    logging = Task.Factory.StartNew(WriteToFile);
                 }
             }
             finally
@@ -34,7 +34,7 @@ namespace Dane
             }
         }
 
-        private void WriteSerializedDataToFile()
+        private void WriteToFile()
         {
             while (queue.TryDequeue(out JObject serializedObj))
             {

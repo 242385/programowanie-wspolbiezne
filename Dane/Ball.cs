@@ -76,7 +76,7 @@ namespace Dane
                 }
                 if (this.logger != null)
                 {
-                    logger.AddBallToSerializationQueue(this);
+                    logger.AddBallToQueue(this);
                 }
 
                 stopwatch.Stop();
@@ -102,6 +102,11 @@ namespace Dane
         {
             this.ObserverObject = observerObj;
             return new ObserverManager(observerObj);
+        }
+
+        public override void Dispose()
+        {
+            this.StopTask = true;
         }
 
         private class ObserverManager : IDisposable

@@ -47,7 +47,15 @@ namespace Logika
         {
             foreach (IBall ball in balls)
             {
-                ball.StopTask = true;
+                ball.Dispose();
+            }
+            if (ballObservers != null)
+            {
+                foreach(IDisposable obs in ballObservers)
+                {
+                    obs.Dispose();
+                }
+                ballObservers.Clear();
             }
             balls.Clear();
         }
@@ -176,7 +184,7 @@ namespace Logika
             }
         }
 
-        public override void OnNext(IBall ball)
+        /*public override void OnNext(IBall ball)
         {
             int i = balls.IndexOf(ball);
             lock (lockObj)
@@ -192,6 +200,31 @@ namespace Logika
             {
                 this.observedObject.OnNext(i);
             }
+        }*/
+
+        public override void OnNext(IBall ball)
+        {
+            int i = balls.IndexOf(ball);
+            try
+            {
+                Monitor.Enter(lockObj);
+                if (!ball.IsInACollision)
+                {                   
+                    BallsCollision(balls[i]);
+                    WallCollision(balls[i]);
+                }
+                this.OutOfBounds(ball);
+            }
+            finally
+            {
+                Monitor.Exit(lockObj);
+            }       
+
+            if (this.observedObject != null)
+            {
+                this.observedObject.OnNext(i);
+            }
+
         }
 
         public override IDisposable Subscribe(IObserver<int> observerObj)

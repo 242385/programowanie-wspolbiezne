@@ -8,7 +8,7 @@ namespace Dane
 {
     public abstract class ILogger
     {
-        public abstract void AddBallToSerializationQueue(IBall ball);
+        public abstract void AddBallToQueue(IBall ball);
 
         public static ILogger CreateLogger()
         {

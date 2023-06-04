@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
+using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 
-/*
 namespace Tests
 {
     [TestClass]
@@ -18,7 +18,7 @@ namespace Tests
             AbstractDataAPI testApi1 = AbstractDataAPI.CreateNewInstance();
             testApi1.CreateBoard();
 
-            IBall ball1 = testApi1.CreateBall();
+            IBall ball1 = testApi1.CreateBall(1);
             Assert.IsNotNull(ball1);
         }
 
@@ -41,7 +41,9 @@ namespace Tests
             int y2 = 2;
             Vector2 coords = new Vector2(x, y);
             Vector2 v = new Vector2(x2, y2);
-            IBall ball1 = IBall.CreateBall(testMass, testRadius, coords, v, 10);
+            AbstractDataAPI testApi1 = AbstractDataAPI.CreateNewInstance();
+            ILogger logger = ILogger.CreateLogger();
+            IBall ball1 = IBall.CreateBall(1,testMass, testRadius, coords, v, 10, logger);
             Assert.IsNotNull(ball1);
         }
 
@@ -49,7 +51,7 @@ namespace Tests
         public void DataAPITests()
         {
             AbstractDataAPI testApi1 = AbstractDataAPI.CreateNewInstance();
-            IBall ball1 = testApi1.CreateBall();
+            IBall ball1 = testApi1.CreateBall(1);
             testApi1.CreateBoard();
             Assert.IsNotNull(ball1);
             Assert.AreEqual(testApi1.GetBoardH(), 600);
@@ -57,6 +59,6 @@ namespace Tests
         }
     }
 }
-*/
+
 
 

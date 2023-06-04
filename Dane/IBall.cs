@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 
 namespace Dane
 {
-    public abstract class IBall : IObservable<IBall>, ISerializable
+    public abstract class IBall : IObservable<IBall>, ISerializable, IDisposable
     {
         public abstract int BallID { get; }
         [JsonConverter(typeof(Vector2Converter))]
@@ -25,18 +25,18 @@ namespace Dane
         public abstract bool StartMoving { get; set; }
         [JsonIgnore]
         public abstract bool IsInACollision { get; set; }
-
+        public abstract void Dispose();
         public static IBall CreateBall(int ballID, float mass, float radius, Vector2 coords, Vector2 vector, float delta, ILogger? logger)
         {
             return new Ball(ballID, mass, radius, coords, vector, delta, logger);
         }
+     
+        public abstract IDisposable Subscribe(IObserver<IBall> observerObj);
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             throw new NotImplementedException();
         }
-
-        public abstract IDisposable Subscribe(IObserver<IBall> observerObj);
     }
     internal class Vector2Converter : JsonConverter<Vector2>
     {
@@ -53,4 +53,4 @@ namespace Dane
             writer.WriteEndObject();
         }
     }
-}
+ }
