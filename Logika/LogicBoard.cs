@@ -167,8 +167,9 @@ namespace Logika
 
             for (int i = 0; i < balls.Count; i++)
             {
-                double x = balls[i].Coordinates.X;
-                double y = balls[i].Coordinates.Y;
+                Vector2 tempCoords = balls[i].Coordinates;
+                double x = tempCoords.X;
+                double y = tempCoords.Y;
                 double r = balls[i].Radius;
 
                 List<double> list = new List<double>()
