@@ -52,34 +52,37 @@ namespace Dane
         {
             int delay = 0;
             while (!this.StopTask)
-            {
-                stopwatch.Restart();
-                stopwatch.Start();
-
+            {               
                 if (this.StartMoving)
                 {
+                    stopwatch.Restart();
+                    stopwatch.Start();
+
                     this.UpdateCoords();
                     if (this.ObserverObject != null)
                     {
                         this.ObserverObject.OnNext(this);
                     }
                     this.IsInACollision = false;
-                }
-                if (this.logger != null)
-                {
-                    logger.AddBallToQueue(this);
-                }
 
-                stopwatch.Stop();
-                if (this.DeltaTime - stopwatch.ElapsedMilliseconds < 0)
-                {
-                    delay = 10;
-                }
-                else
-                {
-                    delay=(int)this.DeltaTime-(int)stopwatch.ElapsedMilliseconds;
-                }
-                await Task.Delay(delay);
+                    if (this.logger != null)
+                    {
+                        logger.AddBallToQueue(this);
+                    }
+
+                    stopwatch.Stop();
+
+                    if (this.DeltaTime - stopwatch.ElapsedMilliseconds < 0)
+                    {
+                        delay = 10;
+                    }
+                    else
+                    {
+                        delay = (int)this.DeltaTime - (int)stopwatch.ElapsedMilliseconds;
+                    }
+
+                    await Task.Delay(delay);
+                }                           
             }
         }
 
