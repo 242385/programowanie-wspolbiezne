@@ -14,7 +14,7 @@ namespace Logika
         internal List<IDisposable>? ballObservers;
         internal IObserver<int>? observedObject;
         internal List<IBall> balls { get; set; }
-        internal object lockObj = new object();
+        internal object Locker = new object();
 
         public LogicBoard(AbstractDataAPI dataAPI)
         {
@@ -69,15 +69,12 @@ namespace Logika
                 double x = balls[i].Coordinates.X;
                 double y = balls[i].Coordinates.Y;
                 double r = balls[i].Radius;
-                double vX = balls[i].VelVector.X;
-                double vY = balls[i].VelVector.Y;
-                double delta = balls[i].DeltaTime;
-                double id = balls[i].BallID;
-
+                
                 List<double> list = new List<double>()
                     {
-                        x, y, r, vX, vY, delta, id
+                        x, y, r
                     };
+
                 coordsList.Add(list);
             }
             return coordsList;
@@ -184,30 +181,12 @@ namespace Logika
             }
         }
 
-        /*public override void OnNext(IBall ball)
-        {
-            int i = balls.IndexOf(ball);
-            lock (lockObj)
-            {
-                if (!ball.IsInACollision)
-                {
-                    WallCollision(balls[i]);
-                    BallsCollision(balls[i]);
-                }
-                this.OutOfBounds(ball);
-            }
-            if (this.observedObject != null)
-            {
-                this.observedObject.OnNext(i);
-            }
-        }*/
-
         public override void OnNext(IBall ball)
         {
             int i = balls.IndexOf(ball);
             try
             {
-                Monitor.Enter(lockObj);
+                Monitor.Enter(Locker);
                 if (!ball.IsInACollision)
                 {                   
                     BallsCollision(balls[i]);
@@ -217,7 +196,7 @@ namespace Logika
             }
             finally
             {
-                Monitor.Exit(lockObj);
+                Monitor.Exit(Locker);
             }       
 
             if (this.observedObject != null)

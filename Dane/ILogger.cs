@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dane
 {
-    public abstract class ILogger
+    public abstract class ILogger : IDisposable
     {
         public abstract void AddBallToQueue(IBall ball);
 
@@ -14,5 +14,8 @@ namespace Dane
         {
             return new Logger();
         }
+
+        public abstract void Dispose();
+
     }
 }
