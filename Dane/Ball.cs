@@ -46,15 +46,6 @@ namespace Dane
             Task.Run(Moving);
         }
 
-        public override Vector2 Coordinates
-        {
-            get { return Coords; }
-            set
-            {
-                Coords = value;
-            }
-        }
-
         internal IObserver<IBall>? ObserverObject;
 
         private async void Moving()
@@ -106,6 +97,14 @@ namespace Dane
         public override void Dispose()
         {
             this.StopTask = true;
+        }
+        public override Vector2 Coordinates
+        {
+            get { return Coords; }
+            set
+            {
+                Coords = value;
+            }
         }
 
         private class ObserverManager : IDisposable

@@ -58,27 +58,7 @@ namespace Logika
                 ballObservers.Clear();
             }
             balls.Clear();
-        }
-
-        public override List<List<double>> GetBallsCoordsAndRadius()
-        {
-            List<List<double>> coordsList = new List<List<double>>();
-
-            for (int i = 0; i < balls.Count; i++)
-            {
-                double x = balls[i].Coordinates.X;
-                double y = balls[i].Coordinates.Y;
-                double r = balls[i].Radius;
-                
-                List<double> list = new List<double>()
-                    {
-                        x, y, r
-                    };
-
-                coordsList.Add(list);
-            }
-            return coordsList;
-        }
+        }       
 
         public override void StartBalls()
         {
@@ -179,6 +159,26 @@ namespace Logika
                     obj.Dispose();
                 }
             }
+        }
+
+        public override List<List<double>> GetBallsCoordsAndRadius()
+        {
+            List<List<double>> coordsList = new List<List<double>>();
+
+            for (int i = 0; i < balls.Count; i++)
+            {
+                double x = balls[i].Coordinates.X;
+                double y = balls[i].Coordinates.Y;
+                double r = balls[i].Radius;
+
+                List<double> list = new List<double>()
+                    {
+                        x, y, r
+                    };
+
+                coordsList.Add(list);
+            }
+            return coordsList;
         }
 
         public override void OnNext(IBall ball)
