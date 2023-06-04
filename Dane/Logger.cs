@@ -6,26 +6,25 @@ namespace Dane
 {
     internal class Logger : ILogger
     {
-        private Task? logging;
         private readonly ConcurrentQueue<JObject> queue;
-        private readonly object bufLocker = new object();
+        private readonly object Locker = new object();
         private readonly JArray logBalls;
         private readonly string path;
         private bool StopTask;
 
         public override void AddBallToQueue(IBall ball)
         {
-            Monitor.Enter(bufLocker);
+            Monitor.Enter(Locker);
             try
             {
-                JObject serializedObj = JObject.FromObject(ball);
-                serializedObj["Czas"] = DateTime.Now.ToString("HH:mm:ss:fff");
+                JObject objToBeSerialized = JObject.FromObject(ball);
+                objToBeSerialized["Czas"] = DateTime.Now.ToString("HH:mm:ss:fff");
 
-                queue.Enqueue(serializedObj);
+                queue.Enqueue(objToBeSerialized);
             }
             finally
             {
-                Monitor.Exit(bufLocker);
+                Monitor.Exit(Locker);
             }
         }
 
@@ -36,9 +35,9 @@ namespace Dane
             {
                 if (!queue.IsEmpty)
                 {
-                    while (queue.TryDequeue(out JObject serializedObj))
+                    while (queue.TryDequeue(out JObject objToBeSerialized))
                     {
-                        logBalls.Add(serializedObj);
+                        logBalls.Add(objToBeSerialized);
                     }
 
                     JSON = JsonConvert.SerializeObject(logBalls, Formatting.Indented);
@@ -69,8 +68,8 @@ namespace Dane
 
         ~Logger()
         {
-            Monitor.Enter(bufLocker);
-            Monitor.Exit(bufLocker);
+            Monitor.Enter(Locker);
+            Monitor.Exit(Locker);
         }
     }
     

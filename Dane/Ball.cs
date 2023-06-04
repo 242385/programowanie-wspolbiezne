@@ -88,8 +88,7 @@ namespace Dane
                 {
                     delay=(int)this.DeltaTime-(int)stopwatch.ElapsedMilliseconds;
                 }
-                //await Task.Delay((int)DeltaTime);
-                await Task.Delay(delay);            //DO PRZEMYSLENIA, ale delay sie zmienia
+                await Task.Delay(delay);
             }
         }
 
@@ -123,6 +122,5 @@ namespace Dane
                 this.obs = null;
             }
         }
-
     }
 }

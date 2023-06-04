@@ -109,15 +109,38 @@ namespace Tests
                 stopwatch = new Stopwatch();
                 Task.Run(Moving);
             }
-            private void Moving()
+            private async void Moving()
             {
+                int delay = 0;
                 while (!this.StopTask)
                 {
-                    if (this.ObserverObject != null)
+                    stopwatch.Restart();
+                    stopwatch.Start();
+
+                    if (this.StartMoving)
                     {
-                        this.ObserverObject.OnNext(this);
+                        this.UpdateCoords();
+                        if (this.ObserverObject != null)
+                        {
+                            this.ObserverObject.OnNext(this);
+                        }
+                        this.IsInACollision = false;
                     }
-                    this.UpdateCoords();
+                    if (this.logger != null)
+                    {
+                        logger.AddBallToQueue(this);
+                    }
+
+                    stopwatch.Stop();
+                    if (this.DeltaTime - stopwatch.ElapsedMilliseconds < 0)
+                    {
+                        delay = 10;
+                    }
+                    else
+                    {
+                        delay = (int)this.DeltaTime - (int)stopwatch.ElapsedMilliseconds;
+                    }
+                    await Task.Delay(delay);
                 }
             }
             private void UpdateCoords()

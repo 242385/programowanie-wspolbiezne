@@ -27,7 +27,6 @@ namespace Dane
 
             internal IBoard? board { get; set; }
 
-
             public override IBall CreateBall(int id)
             {
                 Vector2 coords = RandomPos(preDeterminedRadius);
