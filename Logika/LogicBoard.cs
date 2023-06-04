@@ -32,7 +32,7 @@ namespace Logika
         {
             for (int i = 0; i < num; i++)
             {
-                IBall ball = dataApi.CreateBall();
+                IBall ball = dataApi.CreateBall(i); //i to tutaj id
                 balls.Add(ball);
             }
             foreach (IBall ball in balls)
@@ -63,10 +63,11 @@ namespace Logika
                 double vX = balls[i].VelVector.X;
                 double vY = balls[i].VelVector.Y;
                 double delta = balls[i].DeltaTime;
+                double id = balls[i].BallID;
 
                 List<double> list = new List<double>()
                     {
-                        x, y, r, vX, vY, delta
+                        x, y, r, vX, vY, delta, id
                     };
                 coordsList.Add(list);
             }

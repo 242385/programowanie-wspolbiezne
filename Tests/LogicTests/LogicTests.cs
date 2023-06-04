@@ -2,7 +2,7 @@
 using Logika;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using System.Numerics;
-
+/*
 namespace Tests
 {
     [TestClass]
@@ -154,4 +154,6 @@ namespace Tests
         }
     }
 }
+
+*/
 

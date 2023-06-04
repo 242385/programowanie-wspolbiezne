@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Numerics;
+using System.Reflection;
 
 namespace Dane
 {
     internal class Ball : IBall
     {
+        public override int BallID { get; }
         private Vector2 Coords;
         public override float Mass { get; set; }
         public override float Radius { get; set; }
@@ -13,9 +16,11 @@ namespace Dane
         public override bool StartMoving { get; set; }
         public override bool IsInACollision { get; set; }
         public override Vector2 VelVector { get; set; }
+        private Stopwatch stopwatch;
 
-        public Ball(float mass, float radius, Vector2 coords, Vector2 vector, float delta)
+        public Ball(int ballID, float mass, float radius, Vector2 coords, Vector2 vector, float delta)
         {
+            this.BallID = ballID;
             this.Mass = mass;
             this.Coords = coords;
             this.VelVector = vector;
@@ -24,6 +29,7 @@ namespace Dane
             this.StartMoving = false;
             this.IsInACollision = false;
             this.Radius = radius;
+            stopwatch = new Stopwatch();
             Task.Run(Moving);
         }
 
@@ -40,8 +46,12 @@ namespace Dane
 
         private async void Moving()
         {
+            int delay = 10;
             while (!this.StopTask)
             {
+                stopwatch.Restart();
+                stopwatch.Start();
+
                 if (this.StartMoving)
                 {
                     this.UpdateCoords();
@@ -51,7 +61,18 @@ namespace Dane
                     this.ObserverObject.OnNext(this);
                 }
                 this.IsInACollision = false;
-                await Task.Delay((int)DeltaTime);
+
+                stopwatch.Stop();
+                if (this.DeltaTime - stopwatch.ElapsedMilliseconds < 0)
+                {
+                    delay = 10;
+                }
+                else
+                {
+                    delay=(int)this.DeltaTime-(int)stopwatch.ElapsedMilliseconds;
+                }
+                //await Task.Delay((int)DeltaTime);
+                await Task.Delay(delay);
             }
         }
 

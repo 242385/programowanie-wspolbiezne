@@ -10,7 +10,7 @@ namespace Dane
             return new DataAPI();
         }
 
-        public abstract IBall CreateBall();
+        public abstract IBall CreateBall(int id);
         public abstract void CreateBoard();
         public abstract int GetBoardW();
         public abstract int GetBoardH();
@@ -26,11 +26,11 @@ namespace Dane
             internal IBoard? board { get; set; }
 
 
-            public override IBall CreateBall()
+            public override IBall CreateBall(int id)
             {
                 Vector2 coords = RandomPos(preDeterminedRadius);
                 Vector2 v = RandomDirection();
-                IBall ball = IBall.CreateBall(preDeterminedMass, preDeterminedRadius, coords, v, RandomTickRate());
+                IBall ball = IBall.CreateBall(id, preDeterminedMass, preDeterminedRadius, coords, v, RandomTickRate());
                 return ball;
             }
 
