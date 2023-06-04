@@ -14,13 +14,14 @@ namespace Logika
         internal List<IDisposable>? ballObservers;
         internal IObserver<int>? observedObject;
         internal List<IBall> balls { get; set; }
-        internal object locked = new object();
+        internal object lockObj = new object();
 
         public LogicBoard(AbstractDataAPI dataAPI)
         {
             this.dataApi = dataAPI;
             balls = new List<IBall>();
             ballObservers = new List<IDisposable>();
+            dataAPI.CreateLogger();
         }
 
         public override void CreateBoard()
@@ -32,7 +33,7 @@ namespace Logika
         {
             for (int i = 0; i < num; i++)
             {
-                IBall ball = dataApi.CreateBall(i); //i to tutaj id
+                IBall ball = dataApi.CreateBall(i); //"i" to tutaj id
                 balls.Add(ball);
             }
             foreach (IBall ball in balls)
@@ -81,7 +82,7 @@ namespace Logika
                 ball.StartMoving = true;
             }
         }
-
+       
         private void OutOfBounds(IBall ball)
         {
             if (ball.Coordinates.X > dataApi.GetBoardW() - ball.Radius)
@@ -101,7 +102,7 @@ namespace Logika
                 ball.Coordinates = new Vector2(ball.Coordinates.X, ball.Radius);
             }
         }
-
+      
         private void WallCollision(IBall ball)
         {
             if (ball.Coordinates.X - ball.Radius <= 0 ||
@@ -160,11 +161,9 @@ namespace Logika
                 ball.DeltaTime = ((ball.Mass - collidingBall.Mass) / (ball.Mass + collidingBall.Mass)) * ballInitialDeltaTime + ((2 * collidingBall.Mass) / (ball.Mass + collidingBall.Mass)) * collidingBallInitialDeltaTime;
                 collidingBall.DeltaTime = ((collidingBall.Mass - ball.Mass) / (ball.Mass + collidingBall.Mass)) * collidingBallInitialDeltaTime + ((2 * ball.Mass) / (ball.Mass + collidingBall.Mass)) * ballInitialDeltaTime;
 
-
                 ball.IsInACollision = true;
                 collidingBall.IsInACollision = true;
             }
-
         }
         public override void OnCompleted()
         {
@@ -180,7 +179,7 @@ namespace Logika
         public override void OnNext(IBall ball)
         {
             int i = balls.IndexOf(ball);
-            lock (locked)
+            lock (lockObj)
             {
                 if (!ball.IsInACollision)
                 {

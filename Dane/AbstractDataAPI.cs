@@ -14,6 +14,7 @@ namespace Dane
         public abstract void CreateBoard();
         public abstract int GetBoardW();
         public abstract int GetBoardH();
+        public abstract void CreateLogger();
 
         private class DataAPI : AbstractDataAPI
         {
@@ -22,6 +23,7 @@ namespace Dane
             internal static int hardCodedBoardW = 600;
             internal static int hardCodedBoardH = 600;
             internal Random RNG = new Random();
+            internal ILogger? logger = null;
 
             internal IBoard? board { get; set; }
 
@@ -30,7 +32,7 @@ namespace Dane
             {
                 Vector2 coords = RandomPos(preDeterminedRadius);
                 Vector2 v = RandomDirection();
-                IBall ball = IBall.CreateBall(id, preDeterminedMass, preDeterminedRadius, coords, v, RandomTickRate());
+                IBall ball = IBall.CreateBall(id, preDeterminedMass, preDeterminedRadius, coords, v, RandomTickRate(), this.logger);
                 return ball;
             }
 
@@ -91,6 +93,11 @@ namespace Dane
             internal float RandomTickRate()
             {
                 return (float)RNG.NextDouble() * 5 + 1;
+            }
+
+            public override void CreateLogger()
+            {
+                this.logger = ILogger.CreateLogger();
             }
         }
     }
